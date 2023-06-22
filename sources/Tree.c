@@ -1,8 +1,8 @@
 #include "include/Tree.h"
 
-struct Node* makeNode(const long key, const nodeValueType value)
+Node* makeNode(const long key, const nodeValueType value)
 {
-    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    Node* node = (Node*)malloc(sizeof(Node));
 
     node->key = key;
     node->value = value;
@@ -12,7 +12,7 @@ struct Node* makeNode(const long key, const nodeValueType value)
     return node;
 }
 
-void insert(struct Node** tree, long key, nodeValueType value)
+void insert(Node** tree, long key, nodeValueType value)
 {
     if (*tree == NULL) {
         *tree = makeNode(key, value);
@@ -31,7 +31,7 @@ void insert(struct Node** tree, long key, nodeValueType value)
     }
 }
 
-struct Node* leftLeaf(struct Node* tree)
+Node* leftLeaf(Node* tree)
 {
     while (tree->left)
         tree = tree->left;
@@ -39,7 +39,7 @@ struct Node* leftLeaf(struct Node* tree)
     return tree;
 }
 
-void erase(struct Node** tree, const long key)
+void erase(Node** tree, const long key)
 {
     if (*tree == NULL) {
         return;
@@ -52,7 +52,7 @@ void erase(struct Node** tree, const long key)
             *tree = NULL;
         } else if ((*tree)->left && (*tree)->right) {
             /* Если у узла есть 2 дочерних узла, то находим ближайший больший элемент-лист, который встает на место удаляемого узла. */
-            struct Node* closest = leftLeaf((*tree)->right);
+            Node* closest = leftLeaf((*tree)->right);
             const long key = closest->key;
             const nodeValueType value = closest->value;
             erase(tree, key);
@@ -60,7 +60,7 @@ void erase(struct Node** tree, const long key)
             (*tree)->value = value;
         } else {
             /* Если есть единственный дочерний узел */
-            struct Node* child = (*tree)->left ? (*tree)->left : (*tree)->right;
+            Node* child = (*tree)->left ? (*tree)->left : (*tree)->right;
             free(*tree);
             *tree = child;
         }
@@ -71,30 +71,35 @@ void erase(struct Node** tree, const long key)
     }
 }
 
-void prettyPrintTree(struct Node* tree, int depth, int isLastChild)
+void prettyPrintTreeToFile(Node* tree, int depth, int isLastChild, FILE* fileOut)
 {
     if (tree == NULL) {
         return;
     }
 
     for (int i = 0; i < depth - 1; i++) {
-        printf(NODE_PREFIX_TOP_LEVEL);
+        fprintf(fileOut, NODE_PREFIX_TOP_LEVEL);
     }
 
     if (depth) {
         if (isLastChild) {
-            printf(NODE_PREFIX_LAST);
+            fprintf(fileOut, NODE_PREFIX_LAST);
         } else {
-            printf(NODE_PREFIX);
+            fprintf(fileOut, NODE_PREFIX);
         }
     }
 
-    printf("%ld(%ld)\n", tree->key, tree->value);
-    prettyPrintTree(tree->left, depth + 1, 0);
-    prettyPrintTree(tree->right, depth + 1, 1);
+    fprintf(fileOut, "%ld(" NODE_VALUE_TYPE_STDIO_FORMAT ")\n", tree->key, tree->value);
+    prettyPrintTreeToFile(tree->left, depth + 1, 0, fileOut);
+    prettyPrintTreeToFile(tree->right, depth + 1, 1, fileOut);
 }
 
-void deleteTree(struct Node* tree)
+void prettyPrintTree(Node* tree, int depth, int isLastChild)
+{
+    prettyPrintTreeToFile(tree, depth, isLastChild, stdout);
+}
+
+void deleteTree(Node* tree)
 {
     if (!tree)
         return;
@@ -104,12 +109,17 @@ void deleteTree(struct Node* tree)
     free(tree);
 }
 
-void printInorderTraversal(struct Node* tree)
+void printInorderTraversalToFile(Node* tree, FILE* fileOut)
 {
     if (!tree)
         return;
 
-    printInorderTraversal(tree->left);
-    printf("%ld(%ld) ", tree->key, tree->value);
-    printInorderTraversal(tree->right);
+    printInorderTraversalToFile(tree->left, fileOut);
+    fprintf(fileOut, "%ld(" NODE_VALUE_TYPE_STDIO_FORMAT ") ", tree->key, tree->value);
+    printInorderTraversalToFile(tree->right, fileOut);
+}
+
+void printInorderTraversal(Node* tree)
+{
+    printInorderTraversalToFile(tree, stdout);
 }
