@@ -1,0 +1,25 @@
+# Add some values
+add 9 0
+add 8 13
+add 1237 12372
+add 19 3
+add 20 4
+
+# Normal print
+p
+
+# Pretty print
+pp
+
+# Erase some values
+erase 9
+erase 20
+
+# Normal print
+p
+
+# Pretty print
+pp
+
+# End can be explicitly specified, but program will exit correctly on EOF
+# exit
