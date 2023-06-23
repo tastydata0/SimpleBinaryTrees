@@ -54,12 +54,14 @@ Stdout:
 24(35) 25(15) 26(93) 28(49) 29(21) 30(86) 31(62) 32(27) 35(92) 36(59) 37(63) 43(72) 50(77) 60(26)
 ```
 ## Интерактивный режим
-Есть возможность работы с деревьями в интерактивном режиме, а также посредством написания простых скриптов. Функции для этого хранятся в `"Interpreter.h"`. Перед запуском интерактивного режима, нужно создать интерпретатор, передав туда поток ввода и вывода. Это могут быть файлы или стандартные потоки ввода-вывода. Есть также функции-обёртки, передающие потоки и открывающие файлы за вас. Пример создания интерпретаторов:
+Есть возможность работы с деревьями в интерактивном режиме, а также посредством написания простых скриптов. Функции для этого хранятся в `Interpreter.h`. Перед запуском интерактивного режима, нужно создать интерпретатор, передав туда поток ввода и вывода. Это могут быть файлы или стандартные потоки ввода-вывода. Есть также функции-обёртки, передающие потоки и открывающие файлы за вас. Пример создания интерпретаторов:
 ```cpp
 Interpreter* consoleInterpreter = makeConsoleInterpreter(); // Консольный
 Interpreter* fileInterpreter = makeFileInterpreter("testFileIn.txt", "testFileOut.txt"); // Файловый
 Interpreter* fromFileToConsoleInterpreter = makeCustomInterpreter(fopen("testFileIn.txt", "r"), stdout); // Гибридный
 ```
+> Внимание! Для корректной работы этого кода поместите содержимое папки `examples` в рабочую директорию!
+
 Полный код создания интерпретаторов и работы с ними:
 ```cpp
 #include "include/Interpreter.h"
@@ -200,4 +202,20 @@ pp
 19(3)
 ├── 8(13)
 └── 1237(12372)
+```
+### Добавление собственных команд
+Свою команду можно добавить в этот массив, предварительно написав функцию-обработчик.
+```c
+static const Command commands[] = {
+
+    /* Description                                   Aliases                                          Command function              Example */
+
+    {"Insert node to a tree. Args: key and value.",  {"+", "ADD", "INSERT", "MK", "MKNODE", NULL},    &insertCommandFunc,           "add 7 14"},
+    {"Erase node from tree by key. Arg: key.",       {"-", "ERASE", "DELETE", "REMOVE", NULL},        &eraseCommandFunc,            "erase 7"},
+    {"Exit program deleting the tree if needed.",    {"E", "ESC", "EXIT", "STOP", NULL},              &exitCommandFunc,             "e (or <CTRL+D> as EOF)"},
+    {"Pretty-print a tree.",                         {"PP", "TREE", "PRETTY_PRINT", NULL},            &prettyPrintCommandFunc,      "pp"},
+    {"Print in-order traversal of a tree.",          {"P", "LS", "INORDER_TRAVERSAL", "PRINT", NULL}, &inorderTraversalCommandFunc, "ls"},
+    {"Clean tree.",                                  {"C", "CLEAR", "CLEAN", NULL},                   &cleanTreeCommandFunc,        "c"},
+    {"Print this help message.",                     {"?", HELP_MESSAGE_ALIAS, "COMMANDS", NULL},     &helpCommandFunc,             "help"}
+};
 ```
