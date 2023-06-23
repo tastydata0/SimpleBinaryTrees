@@ -60,6 +60,8 @@ Interpreter* consoleInterpreter = makeConsoleInterpreter(); // Консольн�
 Interpreter* fileInterpreter = makeFileInterpreter("testFileIn.txt", "testFileOut.txt"); // Файловый
 Interpreter* fromFileToConsoleInterpreter = makeCustomInterpreter(fopen("testFileIn.txt", "r"), stdout); // Гибридный
 ```
+> Внимание! Для корректной работы этого кода поместите содержимое папки `examples` в рабочую директорию!
+
 Полный код создания интерпретаторов и работы с ними:
 ```cpp
 #include "include/Interpreter.h"
