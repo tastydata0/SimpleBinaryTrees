@@ -1,27 +1,24 @@
-#include "include/Tree.h"
+#include "include/Interpreter.h"
 
 int main()
 {
-    struct Node* tree = NULL;
+    Interpreter* consoleInterpreter = makeConsoleInterpreter();
+    Interpreter* fileInterpreter = makeFileInterpreter("testFileIn.txt", "testFileOut.txt");
+    Interpreter* fromFileToConsoleInterpreter = makeCustomInterpreter(fopen("testFileIn.txt", "r"), stdout);
 
-    long nodeKeys[] = { 40, 30, 50, 25, 26, 24, 27, 35, 28, 29, 31, 32, 33, 36, 37, 60, 60, 60, 43 };
+    if (fileInterpreter) {
+        start(fileInterpreter);
+    }
 
-    for (int i = 0; i < sizeof(nodeKeys) / sizeof(nodeKeys[0]); i++)
-        insert(&tree, nodeKeys[i], rand() % 100);
+    if (consoleInterpreter) {
+        start(consoleInterpreter);
+    }
 
-    prettyPrintTree(tree, 0, 1);
+    if (fromFileToConsoleInterpreter) {
+        printf("\n * fromFileToConsoleInterpreter started\n\n");
+        start(fromFileToConsoleInterpreter);
+    }
 
-    printInorderTraversal(tree);
-    printf("\n\n");
-
-    erase(&tree, 27);
-    erase(&tree, 33);
-    erase(&tree, 40);
-
-    prettyPrintTree(tree, 0, 1);
-
-    printInorderTraversal(tree);
-    printf("\n");
-
-    deleteTree(tree);
+    printf("\n * creating interpreterWithIncorrectFile...\n\n");
+    Interpreter* interpreterWithIncorrectFile = makeCustomInterpreter(fopen("fileDoesNotExist.error", "r"), stdout);
 }
