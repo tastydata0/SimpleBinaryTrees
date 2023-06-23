@@ -157,3 +157,47 @@ Example: help
 └── 19(9)
  > exit
 ```
+Пример работы скрипта, переданного в интерпретатор:
+
+`testFileIn.txt`:
+```
+# Add some values
+add 9 0
+add 8 13
+add 1237 12372
+add 19 3
+add 20 4
+
+# Normal print
+p
+
+# Pretty print
+pp
+
+# Erase some values
+erase 9
+erase 20
+
+# Normal print
+p
+
+# Pretty print
+pp
+
+# End can be explicitly specified, but program will exit correctly on EOF
+# exit
+
+```
+`testFileOut.txt`:
+```
+8(13) 9(0) 19(3) 20(4) 1237(12372) 
+9(0)
+├── 8(13)
+└── 1237(12372)
+│   ├── 19(3)
+│   │   └── 20(4)
+8(13) 19(3) 1237(12372) 
+19(3)
+├── 8(13)
+└── 1237(12372)
+```
