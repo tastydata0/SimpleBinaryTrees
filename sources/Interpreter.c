@@ -117,9 +117,16 @@ void interpret(Interpreter* interpreter)
 
 void start(Interpreter* interpreter)
 {
+    if (interpreter->fileIn == stdin && interpreter->fileOut == stdout) {
+        fprintf(interpreter->fileOut, PROMPT);
+    }
     /* Продолжаем, пока не введена команда завершения или пока не закончился файл */
     while (!interpreter->endFlag && fgets(interpreter->buffer, sizeof(interpreter->buffer), interpreter->fileIn)) {
         interpret(interpreter);
+
+        if (interpreter->fileIn == stdin && interpreter->fileOut == stdout) {
+            fprintf(interpreter->fileOut, PROMPT);
+        }
     }
 
     deleteTree(interpreter->tree);
