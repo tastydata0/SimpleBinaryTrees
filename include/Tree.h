@@ -10,12 +10,13 @@
 #define NODE_PREFIX_LAST "└── "
 #define NODE_PREFIX_TOP_LEVEL "│   "
 
-#define NODE_VALUE_TYPE_STDIO_FORMAT "%ld"
-
 ///
 /// \brief nodeValueType - тип данных, используемый в качестве значения узла дерева
 ///
 typedef long nodeValueType;
+
+/// Формат для функций из stdio.h для значения узла
+#define NODE_VALUE_TYPE_STDIO_FORMAT "%ld"
 
 ///
 /// \brief Node - структура узла дерева. Имеет ключ, значение и указатели на дочерние элементы
@@ -61,6 +62,15 @@ Node* leftLeaf(Node* tree);
 void erase(Node** tree, const long key);
 
 ///
+/// \brief prettyPrintTreeToFile - функция наглядного вывода дерева в файловый поток (подобно команде tree в linux)
+/// \param tree - указатель на дерево для вывода
+/// \param depth - глубина рекурсии, значение для внутреннего использования. При вызове извне следует передавать 0
+/// \param isLastChild - является ли текущий узел последним дочерним элементом. Значение для внутреннего использования. При вызове извне следует передавать 0
+/// \param fileOut - валидный файловый поток
+///
+void prettyPrintTreeToFile(Node* tree, int depth, int isLastChild, FILE* fileOut);
+
+///
 /// \brief prettyPrintTree - функция наглядного вывода дерева в консоль (подобно команде tree в linux)
 /// \param tree - указатель на дерево для вывода
 /// \param depth - глубина рекурсии, значение для внутреннего использования. При вызове извне следует передавать 0
@@ -68,7 +78,11 @@ void erase(Node** tree, const long key);
 ///
 void prettyPrintTree(Node* tree, int depth, int isLastChild);
 
-
+///
+/// \brief printInorderTraversalToFile - функция вывода в файловый поток обхода дерева в порядке возрастания ключа
+/// \param tree - указатель на дерево для обхода
+/// \param fileOut - валидный файловый поток
+///
 void printInorderTraversalToFile(Node* tree, FILE* fileOut);
 
 ///
